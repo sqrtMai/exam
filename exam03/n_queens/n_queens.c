@@ -161,7 +161,6 @@ void n_queens(int n, int start, char **board)
 	int start_copy = start;
 	if (start == n)
 		return;
-	//board[0][start] = '1';
 	while (board[y])
 	{
 		if (y > 0)
