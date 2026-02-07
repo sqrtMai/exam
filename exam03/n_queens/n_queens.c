@@ -106,83 +106,50 @@ int check_diagonal(char **board, int x, int y, int size)
 	return (1);
 }
 
-void print_solution(char **board, int start, int n)
+void print_solution(char **board, int n)
 {
+	int line = 0;
 	int y = 0;
 	int cross = 0;
-
-	reset_board(board, n);
-	while (board[y])
-	{
-		if (y > 0)
-			start = 0;
-		while (board[y][start])
-		{
-			if (board[y][start] != '1' && check_diagonal(board, start, y, n) && check_line(board, start, y, n))
-			{
-				board[y][start] = '1';
-				cross++;
-				if (cross == n)
-					printf("%d", start);
-				else
-					printf("%d ", start);
-			}
-			start++;
-		}
-		y++;
-	}
-	printf("\n");
-}
-
-void print_board(char **board)
-{
-	int i = 0;
-	int y;
-
-	while (board[i])
+	while (board[line])
 	{
 		y = 0;
-		while (board[i][y])
-			printf("%c ", board[i][y++]);
-		printf("\n");
-		i++;
+		while (board[line][y])
+		{
+			if (board[line][y] == '1')
+			{
+				cross++;
+				if (cross == n)
+					printf("%d", y);
+				else
+					printf("%d ", y);
+			}
+			y++;
+		}
+		line++;
 	}
-	printf("\n");
-	printf("\n");
 	printf("\n");
 }
 
-void n_queens(int n, int start, char **board)
+void n_queens(int n, int line, char **board, int cross)
 {
-	reset_board(board, n);
-	int i = 0;
-	int cross = 0;
-	int y = 0;
-	int start_copy = start;
-	if (start == n)
-		return;
-	while (board[y])
+	int x = 0;
+	if (line == n)
 	{
-		if (y > 0)
-			start = 0;
-		else
-			start = start_copy;
-		while (board[y][start])
-		{
-			if (board[y][start] != '1' && check_diagonal(board, start, y, n) && check_line(board, start, y, n))
-			{
-				board[y][start] = '1';
-				cross++;
-			}
-			start++;
-		}
-		y++;
+		if (cross == n)
+			print_solution(board, n);
+		return;
 	}
-	//print_board(board);
-	//printf("%d\n", cross);
-	if (cross == n)
-		print_solution(board, start_copy, n);
-	n_queens(n, start_copy + 1, board);
+	while (board[line][x])
+	{
+		if (board[line][x] != '1' && check_diagonal(board, x, line, n) && check_line(board, x, line, n))
+		{
+			board[line][x] = '1';
+			n_queens(n, line + 1, board, cross + 1);
+			board[line][x] = '0';
+		}
+		x++;
+	}
 }
 
 int main(int argc, char **argv)
@@ -192,7 +159,8 @@ int main(int argc, char **argv)
 	int n = atoi(argv[1]);
 	if (n <= 2)
 		return 1;
-	printf("N EST EGAL A = %d\n", n);
+	int cross = 0;
 	char **board = malloc_board(n);
-	n_queens(n, 0, board);
+	reset_board(board, n);
+	n_queens(n, 0, board, cross);
 }
