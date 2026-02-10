@@ -6,7 +6,7 @@ typedef struct s_remove
 {
 	int remove_open;
 	int remove_close;
-}	t_remove;
+} t_remove;
 
 void get_remove_nbr(char *str, t_remove *remove)
 {
@@ -50,32 +50,32 @@ int is_valid(char *str)
 	return 0;
 }
 
-void rip(char *str, int remove_open, int remove_close)
+void rip(char *str, int remove_open, int remove_close, int start)
 {
 	char temp;
-	int i = 0;
+	int i = start;
 
+	if (is_valid(str))
+		puts(str);
 	while (str[i] && (remove_open || remove_close))
 	{
 		if (str[i] == '(' && remove_open)
 		{
 			temp = str[i];
 			str[i] = ' ';
-			rip(str, remove_open - 1, remove_close);
+			rip(str, remove_open - 1, remove_close, i + 1);
 			str[i] = temp;
 		}
 		if (str[i] == ')' && remove_close)
 		{
 			temp = str[i];
 			str[i] = ' ';
-			rip(str, remove_open, remove_close - 1);
+			rip(str, remove_open, remove_close - 1, i + 1);
 			str[i] = temp;
 		}
 		i++;
 	}
-	if (is_valid(str))
-		puts(str);
-	return ;
+	return;
 }
 
 int main(int argc, char **argv)
@@ -86,5 +86,5 @@ int main(int argc, char **argv)
 	remove.remove_close = 0;
 	remove.remove_open = 0;
 	get_remove_nbr(argv[1], &remove);
-	rip(argv[1], remove.remove_open, remove.remove_close);
+	rip(argv[1], remove.remove_open, remove.remove_close, 0);
 }
